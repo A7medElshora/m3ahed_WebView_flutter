@@ -1,33 +1,35 @@
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'login.dart';
+import 'package:m3ahed/NavyBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> with TickerProviderStateMixin {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with TickerProviderStateMixin {
   late PageController _pageController;
   late AnimationController _animationController;
   int _currentPage = 0;
+  late SharedPreferences _prefs;
 
   final List<String> _titles = [
     "تعلَم مهارات جديدة",
-    "تسجيل الدخول",
+    "الدورات",
     "الشهــادات",
   ];
 
   final List<String> _descriptions = [
     "يمكنك الآن دراسة كل الدورات التي تريدها\n دون الحاجة للسفر ",
-    "يجب تسجيل الدخول أولا\n ليمكنك التصفح بأمان",
-    "بعد انتهائكمن الدورة تكون جاهزا لدخول الامتحان النهائي للتقييم\nومن ثمَّ الحصول على الشهادة النهائية \n جميع الشهادات معتمدة من الجهات الرسمية ",
+    " تعلم كل ماتحتاجه فى جميع المجالات\n كل ماتحتاجه للتأهيل لسوق العمل ",
+    "بعد انتهائك من الدورة تكون جاهزا لدخول الامتحان النهائي للتقييم\nومن ثمَّ الحصول على الشهادة النهائية \n جميع الشهادات معتمدة من الجهات الرسمية ",
   ];
 
   final List<String> _lottieFiles = [
     'assets/images/welcome.json',
-    'assets/images/login.json',
+    'assets/images/learn.json',
     'assets/images/cer.json',
   ];
 
@@ -39,6 +41,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
       vsync: this,
       duration: Duration(milliseconds: 700),
     );
+    _initSharedPreferences();
+  }
+
+  Future<void> _initSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    bool done = _prefs.getBool('done') ?? false;
+    bool skip = _prefs.getBool('skip') ?? false;
+
+    if (done || skip) {
+      // If 'Done' or 'Skip' is true, navigate directly to WebViewApp
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => NavPage()),
+      );
+    }
   }
 
   @override
@@ -91,8 +107,62 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: _buildTextContent(index),
         ),
+        SizedBox(height: 20),
+        _buildActionButton(index),
       ],
     );
+  }
+
+  Widget _buildActionButton(int index) {
+    if (index < _titles.length - 1) {
+      return Align(
+          alignment: Alignment.bottomRight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.only(right: 15),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _pageController.nextPage(
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.ease,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                  ),
+                  child: Text('التالي',style: TextStyle(color: Colors.white),),
+                ),
+              )
+            ],
+          ));
+    } else {
+      return Align(
+        alignment: Alignment.bottomRight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.only(right: 15),
+              child: ElevatedButton(
+                onPressed: () {
+                  _prefs.setBool('done', true);
+
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => NavPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                ),
+                child: Text('تم',style: TextStyle(color: Colors.white),),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildLottieAnimation(int index) {
@@ -124,7 +194,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
             color: Colors.grey,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 60),
       ],
     );
   }
@@ -136,7 +206,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
           _titles.length,
-              (index) => Padding(
+          (index) => Padding(
             padding: EdgeInsets.all(8.0),
             child: Container(
               width: 10.0,
@@ -160,9 +230,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             InkWell(
-              onTap: () {
+              onTap: () async {
+                await _prefs.setBool('skip', true);
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => NavPage()),
                 );
               },
               child: Text(

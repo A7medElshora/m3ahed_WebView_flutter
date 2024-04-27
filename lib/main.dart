@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:m3ahed/Login.dart';
+import 'package:m3ahed/Onboardings.dart';
 import 'package:m3ahed/Splash.dart';
 
 void main() async{
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
      initialRoute: '/',
             routes: {
               '/': (context) => SplashScreen(), 
-              '/login':(context)=> LoginPage(),
+              // '/login':(context)=> OnboardingScreen(),
               }
     );
   }
