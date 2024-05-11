@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:m3ahed/NavyBar.dart';
+import 'package:m3ahed/WebView.dart';
+import 'package:m3ahed/noti_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   late AnimationController _animationController;
   int _currentPage = 0;
   late SharedPreferences _prefs;
+  late NotidicationService _notificationService; // Initialize the notification service
 
   final List<String> _titles = [
     "تعلَم مهارات جديدة",
@@ -42,6 +45,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: Duration(milliseconds: 700),
     );
     _initSharedPreferences();
+    _notificationService = NotidicationService(); // Initialize the notification service
+    _notificationService.initNotification(); // Initialize notification settings
   }
 
   Future<void> _initSharedPreferences() async {
@@ -52,7 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     if (done || skip) {
       // If 'Done' or 'Skip' is true, navigate directly to WebViewApp
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => NavPage()),
+        MaterialPageRoute(builder: (context) => Home()),
       );
     }
   }
@@ -67,19 +72,22 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            itemCount: _titles.length,
-            itemBuilder: (context, index) {
-              return _buildPage(index);
-            },
-          ),
-          _buildSkipButton(),
-          _buildPageIndicator(),
-        ],
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              itemCount: _titles.length,
+              itemBuilder: (context, index) {
+                return _buildPage(index);
+              },
+            ),
+            _buildSkipButton(),
+            _buildPageIndicator(),
+          ],
+        ),
       ),
     );
   }
@@ -98,14 +106,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.all(50),
             child: _buildLottieAnimation(index),
           ),
         ),
         SizedBox(height: 24.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: _buildTextContent(index),
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: _buildTextContent(index),
+          ),
         ),
         SizedBox(height: 20),
         _buildActionButton(index),
@@ -116,29 +126,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   Widget _buildActionButton(int index) {
     if (index < _titles.length - 1) {
       return Align(
-          alignment: Alignment.bottomRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.only(right: 15),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _pageController.nextPage(
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.ease,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                  ),
-                  child: Text('التالي',style: TextStyle(color: Colors.white),),
-                ),
-              )
-            ],
-          ));
-    } else {
-      return Align(
         alignment: Alignment.bottomRight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -147,16 +134,47 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               padding: EdgeInsets.only(right: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  _prefs.setBool('done', true);
-
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => NavPage()),
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
+                  backgroundColor: Colors.green,
                 ),
-                child: Text('تم',style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'التالي',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      return Align(
+        alignment: Alignment.bottomRight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 15),
+              child: ElevatedButton(
+                onPressed: () {
+                  _prefs.setBool('done', true);
+                  _notificationService.ShowNotification(
+                      title: "مرحبًا بك", body: "تم تسجيلك بنجاح!"); // Show the welcome notification
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: Text(
+                  'تم',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -206,7 +224,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
           _titles.length,
-          (index) => Padding(
+              (index) => Padding(
             padding: EdgeInsets.all(8.0),
             child: Container(
               width: 10.0,
@@ -224,29 +242,28 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   Widget _buildSkipButton() {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            InkWell(
-              onTap: () async {
-                await _prefs.setBool('skip', true);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => NavPage()),
-                );
-              },
-              child: Text(
-                "تخطي",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.lightGreen,
-                ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          InkWell(
+            onTap: () async {
+              await _prefs.setBool('skip', true);
+              _notificationService.ShowNotification(
+                  title: "مرحبًا بك", body: "تم تسجيلك بنجاح!"); // Show the welcome notification
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => Home()),
+              );
+            },
+            child: Text(
+              "تخطي",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.lightGreen,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

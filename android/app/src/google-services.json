@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "636422130232",
+    "project_id": "m3ahed-6d760",
+    "storage_bucket": "m3ahed-6d760.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636422130232:android:2f197c093411a0543bf4cd",
+        "android_client_info": {
+          "package_name": "com.example.m3ahed"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6hzBS0xKoqfCR9FfE7DniWHHtB641B58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

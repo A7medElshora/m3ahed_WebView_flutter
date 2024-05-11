@@ -1,0 +1,140 @@
+import 'package:flutter/material.dart';
+import 'package:m3ahed/About.dart';
+import 'package:m3ahed/WebView.dart';
+import 'package:m3ahed/galleryPages.dart';
+
+// Data model for FAQ items
+class FAQItem {
+  final String question;
+  final String answer;
+
+  FAQItem(this.question, this.answer);
+}
+
+// FAQ screen widget
+class FAQScreen extends StatelessWidget {
+  final List<FAQItem> faqs = [
+    FAQItem(
+      "ما هي معاهد كوم ؟",
+      "معاهد كومهي منصة للتعلم عن بعد \n تتيح للمستخدم فرصة معرفة وتعلم مهارات جديدة مناسبة على اعلى مستوى \n وت}هله لسوق العمل . ",
+    ),
+    FAQItem(
+      "هل احتاج لشهادات معينه للدراسة بها ؟",
+      "بالطبع لا ..\nلا تحتاج الى اي شهادات او خبرات سابقة لدراسة اى محتوى جديد \n فنحن نتولى تعليمك وتدريبك من الصفر الى الاحتراف حتيى تبرع فيها بالكامل .",
+    ),
+    FAQItem(
+      "ماهى المجالات الاكثر شهرة ؟!",
+      "يمكنك ان تدرس كل المجالات التى ترغب بها مثل مجالات البرمجه بكافة افرعها \n والمعمار والشبكات والمحاسبة والتسويق واللغات وغيرها ...",
+    ),
+    FAQItem(
+      "هل الشهادات معتمدة ؟",
+      "بالطبع..\n فجميع الشاهادات التي يحصل عليها الطلاب الذين اتموا دوراتهم التعليمية موثوقة ومعتمدة من جهات رسمية فىالدولة وخارجها .",
+    ),
+    FAQItem(
+      "ما مدى كفاءة المعلمين ؟",
+      "يتمتع المعيدين والمعلمين لدينابكفاءة عالية جدا \n حيث يتم اختيارهم بعناية فائقة \n كما ان لهم خبرات كبيرة فى مجالاتهم ومشهود لهمبحسن لاالخلق والدرجة العلمية الرفيعة والاساس فى اختيارهم هو الدقة والخبرة فى العمل .",
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text("FAQ",style: TextStyle(color: Colors.cyanAccent),),centerTitle: true,
+
+      backgroundColor: Color(0xff292931),
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: Colors.greenAccent),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  child: Wrap(
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.home_outlined,color: Colors.green,),
+                        title: Container(padding: EdgeInsets.all(10),child: Text('الرئـيسـية',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Home()),);
+                        },
+                      ),
+
+                      ListTile(
+                        leading: Icon(Icons.info_outline_rounded,color: Colors.green),
+                        title: Container(padding: EdgeInsets.all(10),child: Text('عــنـا',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => AboutPage()),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.browse_gallery_outlined,color: Colors.green),
+                        title: Container(padding: EdgeInsets.all(10),child: Text('معرض الصور',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Gallery()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       if (Navigator.of(context).canPop()) {
+        //         Navigator.of(context).pop();
+        //       }
+        //     },
+        //     icon: Icon(Icons.arrow_back, color: Colors.greenAccent),
+        //   ),
+        // ],
+
+      ),
+
+      body: Center(
+        child: ListView.builder(
+          itemCount: faqs.length,
+          itemBuilder: (context, index) {
+            final FAQItem faq = faqs[index];
+            return Column(
+              children: [
+                SizedBox(height: 30), // Add 30 units of space before each question
+                ExpansionTile(
+                  title: Text(faq.question),
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20.0),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        faq.answer,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15),
+                Divider(color: Colors.grey),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

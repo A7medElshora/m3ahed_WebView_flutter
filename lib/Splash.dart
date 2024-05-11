@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:m3ahed/NavyBar.dart';
 import 'package:m3ahed/Onboardings.dart';
+import 'package:m3ahed/WebView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'conections.dart';
 
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -33,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else if (isDone) {
       // If user is logged in, navigate directly to WebViewApp
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => NavPage()), // Check if this route is correct
+        MaterialPageRoute(builder: (context) => Home()), // Check if this route is correct
       );
     } else {
       // Delay the animation
@@ -44,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       });
 
-      Future.delayed(Duration(seconds: 5), () {
+      Future.delayed(Duration(seconds: 4), () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => OnboardingScreen()),
         );
@@ -55,37 +57,48 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AnimatedOpacity(
-              opacity: _opacity,
-              duration: Duration(seconds: 1),
-              child: Image.asset(
-                'assets/images/m3hd.png',
-                width: 500,
-                height: 500,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.lightGreen[100]!, // Light green color
+              Colors.white, // White color
+            ],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AnimatedOpacity(
+                opacity: _opacity,
+                duration: Duration(seconds: 1),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), // Adjust the value as needed
+                    border: Border.all(), // Border color and width
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10), // Same value as above for consistency
+                    child: Image.asset(
+                      'assets/images/spl.jfif',
+                      // width: 500,
+                      // height: 500,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            // AnimatedAlign(
-            //   alignment: Alignment(0.0, _alignment),
-            //   duration: Duration(seconds: 1),
-            //   child: Text(
-            //     'Welcome',
-            //     style: TextStyle(
-            //       fontSize: 30,
-            //       fontWeight: FontWeight.bold,
-            //       color: Colors.green,
-            //     ),
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
-          ],
+              SizedBox(height: 20),
+              // Add more widgets as needed
+            ],
+          ),
         ),
       ),
     );
+
+
+
   }
 }
