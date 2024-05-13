@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:m3ahed/Notification_screen.dart';
-import 'package:m3ahed/WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Acount_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Categories_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Home_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/cart_WebView.dart';
 import 'faq_screen.dart';
 import 'galleryPages.dart';
 class AboutPage extends StatefulWidget {
@@ -45,6 +48,8 @@ class _AboutPageState extends State<AboutPage> with SingleTickerProviderStateMix
                   return Container(
                     child: Wrap(
                       children: <Widget>[
+
+                        ///Home
                         ListTile(
                           leading: Icon(Icons.home_outlined,color: Colors.green,),
                           title: Container(padding: EdgeInsets.all(10),child: Text('الرئـيسـية',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
@@ -54,6 +59,91 @@ class _AboutPageState extends State<AboutPage> with SingleTickerProviderStateMix
                               MaterialPageRoute(builder: (context) => Home()),);
                           },
                         ),
+                        ///Category
+                        ListTile(
+                          leading: Icon(Icons.category_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'فـئـات',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Categories()),
+                            );
+                          },
+                        ),
+                        ///Account
+                        ListTile(
+                          leading: Icon(Icons.account_circle_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'حـسـابى',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Acount()),
+                            );
+                          },
+                        ),
+                        ///Cart
+                        ListTile(
+                          leading: Icon(Icons.shopping_cart,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'الســلة',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Cart()),
+                            );
+                          },
+                        ),
+                        ///Faq
+                        ListTile(
+                          leading: Icon(Icons.question_mark_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'FAQ',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => FAQScreen()),
+                            );
+                          },
+                        ),
+                       ///Gallery
                         ListTile(
                           leading: Icon(Icons.browse_gallery_outlined,color: Colors.green),
                           title: Container(padding: EdgeInsets.all(10),child: Text('معرض الصور',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
@@ -64,15 +154,7 @@ class _AboutPageState extends State<AboutPage> with SingleTickerProviderStateMix
                             );
                           },
                         ),
-                        ListTile(
-                          leading: Icon(Icons.question_mark_outlined,color: Colors.green,),
-                          title: Container(padding: EdgeInsets.all(10),child: Text('FAQ',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => FAQScreen()),);
-                          },
-                        ),
+
 
                       ],
                     ),
@@ -84,7 +166,7 @@ class _AboutPageState extends State<AboutPage> with SingleTickerProviderStateMix
           // actions: [
           //   IconButton(
           //     onPressed: () {
-          //       if (Navigator.of(context).canPop()) {
+          //       if (Navigator.of(context).canPop()) {clea
           //         Navigator.of(context).pop();
           //       }
           //     },

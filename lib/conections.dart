@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:m3ahed/Splash.dart';
 
@@ -7,57 +6,62 @@ class NoConnectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,
-      body: Center(
-        child: Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 250,),
-            Image.asset("assets/images/wifi.png"),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'No Connection!',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            SizedBox(height: 20),
-            Container(
-              child: Text(
-                "          check the connection and try again",
-                style: TextStyle(color: Colors.white, fontSize: 17),
-              ),),
-            SizedBox(height: 250),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => SplashScreen()),
-                );
-              },
-              child:Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+      body: SafeArea(
+        child: SingleChildScrollView( // Ensures content scrolls on small screens
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1), // Adjust top padding
+                Image.asset(
+                  "assets/images/wifi.png",
+                  height: MediaQuery.of(context).size.height * 0.25, // Responsive image size
                 ),
-                child: Padding(
-                  padding:
-                  const EdgeInsets.fromLTRB(100, 7, 100, 7),
+                SizedBox(height: 20.0),
+                Text(
+                  'لا يوجد اتصال بالإنترنت',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24.0, // Adjust font size based on screen size
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center, // Center text
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  "تحقق من الاتصال وحاول مرة أخرى",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0, // Adjust font size based on screen size
+                  ),
+                  textAlign: TextAlign.center, // Center text
+                ),
+                SizedBox(height: 20.0),
+                Padding(padding: EdgeInsets.only(top: 180),
+                child: ElevatedButton( // Use ElevatedButton for a professional look
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SplashScreen()),
+                  ),
                   child: Text(
-                    '   Try again',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    'إعادة المحاولة',
+                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[700], // Adjust button color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Rounded corners
                     ),
+                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0), // Adjust button padding
                   ),
                 ),
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
-

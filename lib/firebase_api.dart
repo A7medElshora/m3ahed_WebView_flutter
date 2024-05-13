@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'main.dart';
-class FirebaseApi{
-  final _firebaseMessaging =FirebaseMessaging.instance;
 
+class FirebaseApi {
+  final _firebaseMessaging = FirebaseMessaging.instance;
 
-  Future<void> initNotifivations()async{
-    ///request permission
+  Future<void> initNotifivations() async {
+    /// Request permission
     await _firebaseMessaging.requestPermission();
-    ///fitch token
+    /// Fetch token
     final fCMToken = await _firebaseMessaging.getToken();
-    ///Prnt Token
+    /// Print Token
     print('Token:- $fCMToken ----');
     initPushNotifications();
-
   }
-  ///Handling Notification message
-  void handelMessage(RemoteMessage? message){
-    if (message == null )return;
-      navigatorKey.currentState?.pushNamed(
-        '/Notification_screen',
-        arguments:message,
-      );
+
+  /// Handling Notification message
+  void handelMessage(RemoteMessage? message) {
+    if (message == null) return;
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      '/splash_screen', // Replace '/splash_screen' with your SplashScreen route name
+          (route) => false, // This will remove all routes from the stack and push the SplashScreen
+    );
   }
 
   Future<void> initPushNotifications() async {
@@ -29,5 +29,4 @@ class FirebaseApi{
 
     FirebaseMessaging.onMessageOpenedApp.listen(handelMessage);
   }
-
 }

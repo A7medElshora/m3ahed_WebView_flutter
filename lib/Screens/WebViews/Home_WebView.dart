@@ -1,50 +1,84 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:m3ahed/About.dart';
+import 'package:m3ahed/Screens/WebViews/Acount_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Categories_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/cart_WebView.dart';
 import 'package:m3ahed/galleryPages.dart';
+import 'package:m3ahed/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:m3ahed/faq_screen.dart';
 
+//Home
 class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   late final WebViewController controller;
   var loadingPercentage = 0;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState>();
+  late DragGesturePullToRefresh dragGesturePullToRefresh;
 
   DateTime? currentBackPressTime;
 
   @override
   void initState() {
     super.initState();
-    controller = WebViewController()
+    controller = WebViewController() // Initialize controller first
       ..setBackgroundColor(const Color(0x00000000))
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (url) {
-          setState(() {
-            loadingPercentage = 0;
-          });
-        },
-        onProgress: (progress) {
-          setState(() {
-            loadingPercentage = progress;
-          });
-        },
-        onPageFinished: (url) {
-          setState(() {
-            loadingPercentage = 100;
-          });
-        },
-      ))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (String url) {
+            dragGesturePullToRefresh.started();
+            setState(() {
+              loadingPercentage = 0;
+            });
+          },
+          onProgress: (progress) {
+            setState(() {
+              loadingPercentage = progress;
+            });
+          },
+          onPageFinished: (String url) {
+            dragGesturePullToRefresh.finished();
+            setState(() {
+              loadingPercentage = 100;
+            });
+          },
+          onWebResourceError: (WebResourceError error) {
+            dragGesturePullToRefresh.finished();
+          },
+        ),
+      )
       ..loadRequest(
         Uri.parse('https://m3ahd.com/'),
       );
+
+    dragGesturePullToRefresh =
+        DragGesturePullToRefresh(3000, 10)
+            .setController(controller)
+            .setDragHeightEnd(200)
+            .setDragStartYDiff(10)
+            .setWaitToRestart(3000);
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    dragGesturePullToRefresh.setDragHeightEnd(MediaQuery.of(context).size.height);
   }
 
   Future<void> _refresh() async {
@@ -97,9 +131,83 @@ class _HomeState extends State<Home> {
                   return Container(
                     child: Wrap(
                       children: <Widget>[
+                        ///Categories
                         ListTile(
-                          leading: Icon(Icons.info_outline_rounded,color: Colors.green),
-                          title: Container(padding: EdgeInsets.all(10),child: Text('عــنـا',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                          leading: Icon(Icons.category_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'فـئـات',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Categories()),
+                            );
+                          },
+                        ),
+                        ///Account
+                        ListTile(
+                          leading: Icon(Icons.account_circle_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'حـسـابى',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Acount()),
+                            );
+                          },
+                        ),
+                        ///Cart
+                        ListTile(
+                          leading: Icon(Icons.shopping_cart,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'الســلة',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Cart()),
+                            );
+                          },
+                        ),
+                        ///About
+                        ListTile(
+                          leading: Icon(Icons.info_outline_rounded,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'عــنـا',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.of(context).push(
@@ -107,34 +215,48 @@ class _HomeState extends State<Home> {
                             );
                           },
                         ),
+                        ///Faq
                         ListTile(
-                          leading: Icon(Icons.question_mark_outlined,color: Colors.green,),
-                          title: Container(padding: EdgeInsets.all(10),child: Text('FAQ',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                          leading: Icon(Icons.question_mark_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'FAQ',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => FAQScreen()),);
+                              MaterialPageRoute(builder: (context) => FAQScreen()),
+                            );
                           },
                         ),
+                        ///Gallery
                         ListTile(
-                          leading: Icon(Icons.question_mark_outlined,color: Colors.green,),
-                          title: Container(padding: EdgeInsets.all(10),child: Text('معرض الصور',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
+                          leading: Icon(Icons.browse_gallery_outlined,
+                              color: Colors.green),
+                          title: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'معرض الصور',
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Gallery()),);
+                              MaterialPageRoute(builder: (context) => Gallery()),
+                            );
                           },
                         ),
-
-
-                        // ListTile(
-                        //   leading: Icon(Icons.screen_share),
-                        //   title: Text('Screen 4'),
-                        //   onTap: () {
-                        //     Navigator.pop(context);
-                        //     // Navigate to Screen 4
-                        //   },
-                        // ),
                       ],
                     ),
                   );
@@ -144,8 +266,8 @@ class _HomeState extends State<Home> {
           ),
           actions: [
             IconButton(
-              onPressed: () => _refresh(),
-              icon: Icon(Icons.refresh_outlined, color: Colors.greenAccent),
+              onPressed: () => _onWillPop(), // Call _onWillPop for go back
+              icon: Icon(Icons.arrow_circle_left, color: Colors.greenAccent), // Change icon to arrow_back
             ),
           ],
         ),
@@ -154,8 +276,14 @@ class _HomeState extends State<Home> {
             RefreshIndicator(
               key: _refreshIndicatorKey,
               onRefresh: _refresh,
-              child: WebViewWidget(
-                controller: controller,
+              child: Builder(
+                builder: (context) {
+                  dragGesturePullToRefresh.setContext(context);
+                  return WebViewWidget(
+                    controller: controller,
+                    gestureRecognizers: {Factory(() => dragGesturePullToRefresh)},
+                  );
+                },
               ),
             ),
             if (loadingPercentage < 100)
@@ -163,12 +291,22 @@ class _HomeState extends State<Home> {
                 value: loadingPercentage / 100.0,
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent),
               ),
+
+
           ],
         ),
       ),
     );
   }
 }
+
+//Categories
+
+//Account
+
+//Cart
+
+
 
 // import 'package:flutter/material.dart';
 // import 'package:webview_flutter/webview_flutter.dart';

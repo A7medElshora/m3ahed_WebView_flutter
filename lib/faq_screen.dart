@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:m3ahed/About.dart';
-import 'package:m3ahed/WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Acount_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Categories_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Home_WebView.dart';
+import 'package:m3ahed/Screens/WebViews/cart_WebView.dart';
 import 'package:m3ahed/galleryPages.dart';
 
 // Data model for FAQ items
@@ -52,13 +55,77 @@ class FAQScreen extends StatelessWidget {
                 return Container(
                   child: Wrap(
                     children: <Widget>[
+                      ///Home
                       ListTile(
                         leading: Icon(Icons.home_outlined,color: Colors.green,),
                         title: Container(padding: EdgeInsets.all(10),child: Text('الرئـيسـية',style: TextStyle(color: Colors.blueGrey,fontSize: 18,fontWeight: FontWeight.bold),),),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) => Home()),);
+                        },
+                      ),
+                      ///Category
+                      ListTile(
+                        leading: Icon(Icons.category_outlined,
+                            color: Colors.green),
+                        title: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'فـئـات',
+                            style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Categories()),
+                          );
+                        },
+                      ),
+                      ///Account
+                      ListTile(
+                        leading: Icon(Icons.account_circle_outlined,
+                            color: Colors.green),
+                        title: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'حـسـابى',
+                            style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Acount()),
+                          );
+                        },
+                      ),
+                      ///Cart
+                      ListTile(
+                        leading: Icon(Icons.shopping_cart,
+                            color: Colors.green),
+                        title: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'الســلة',
+                            style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Cart()),
+                          );
                         },
                       ),
 
@@ -89,16 +156,6 @@ class FAQScreen extends StatelessWidget {
             );
           },
         ),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       if (Navigator.of(context).canPop()) {
-        //         Navigator.of(context).pop();
-        //       }
-        //     },
-        //     icon: Icon(Icons.arrow_back, color: Colors.greenAccent),
-        //   ),
-        // ],
 
       ),
 

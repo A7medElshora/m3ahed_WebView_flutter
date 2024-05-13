@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:m3ahed/NavyBar.dart';
 import 'package:m3ahed/Onboardings.dart';
-import 'package:m3ahed/WebView.dart';
+import 'package:m3ahed/Screens/WebViews/Home_WebView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'conections.dart';
 
